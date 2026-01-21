@@ -58,7 +58,7 @@ export interface SiteSettings {
   site_description: string;
   logo: string;
   favicon: string;
-  social_media: Record<string, string>;
+  social_media: Record<string, any>;
   contact_email: string | null;
   contact_phone: string | null;
   contact_address: string | null;
