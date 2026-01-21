@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { Loader2, Save, Globe, Image as ImageIcon, Upload, Link, Sparkles, Eye, EyeOff, CheckCircle2, Settings as SettingsIcon } from 'lucide-react';
+import { Loader2, Save, Globe, Image as ImageIcon, Upload, Link, Sparkles, Eye, EyeOff, CheckCircle2, Settings as SettingsIcon, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { AdminSettingsSkeleton } from '@/components/skeletons/AdminSkeletons';
 import { getSettings, updateSettings, type Settings } from '@/lib/services/settings-service';
@@ -34,7 +35,18 @@ const AdminSettings = () => {
     contact_email: '',
     contact_phone: '',
     contact_address: '',
-    gemini_api_key: ''
+    gemini_api_key: '',
+    // Download template settings
+    download_header_style: 'banner' as 'banner' | 'text',
+    download_show_logo: true,
+    download_show_site_name: true,
+    download_show_tagline: true,
+    download_show_footer_logo: true,
+    download_footer_email: '',
+    download_footer_website: '',
+    download_show_tags: true,
+    download_show_excerpt: true,
+    download_columns: 2 as 1 | 2,
   });
 
   useEffect(() => {
@@ -47,7 +59,7 @@ const AdminSettings = () => {
       const data = await getSettings();
       if (data) {
         setSettings(data);
-        const socialMedia = (data.social_media as Record<string, string>) || {};
+        const socialMedia = (data.social_media as Record<string, any>) || {};
         setFormData({
           site_name: data.site_name || '',
           site_description: data.site_description || '',
@@ -62,7 +74,18 @@ const AdminSettings = () => {
           contact_email: data.contact_email || '',
           contact_phone: data.contact_phone || '',
           contact_address: data.contact_address || '',
-          gemini_api_key: (data as any).gemini_api_key || ''
+          gemini_api_key: (data as any).gemini_api_key || '',
+          // Download template settings
+          download_header_style: (socialMedia.download_header_style as 'banner' | 'text') || 'banner',
+          download_show_logo: socialMedia.download_show_logo !== false,
+          download_show_site_name: socialMedia.download_show_site_name !== false,
+          download_show_tagline: socialMedia.download_show_tagline !== false,
+          download_show_footer_logo: socialMedia.download_show_footer_logo !== false,
+          download_footer_email: socialMedia.download_footer_email || '',
+          download_footer_website: socialMedia.download_footer_website || '',
+          download_show_tags: socialMedia.download_show_tags !== false,
+          download_show_excerpt: socialMedia.download_show_excerpt !== false,
+          download_columns: (socialMedia.download_columns as 1 | 2) || 2,
         });
       }
     } catch (error) {
@@ -92,7 +115,18 @@ const AdminSettings = () => {
           youtube: formData.youtube,
           instagram: formData.instagram,
           header_logo_display: formData.header_logo_display,
-          footer_logo_display: formData.footer_logo_display
+          footer_logo_display: formData.footer_logo_display,
+          // Download template settings
+          download_header_style: formData.download_header_style,
+          download_show_logo: formData.download_show_logo,
+          download_show_site_name: formData.download_show_site_name,
+          download_show_tagline: formData.download_show_tagline,
+          download_show_footer_logo: formData.download_show_footer_logo,
+          download_footer_email: formData.download_footer_email,
+          download_footer_website: formData.download_footer_website,
+          download_show_tags: formData.download_show_tags,
+          download_show_excerpt: formData.download_show_excerpt,
+          download_columns: formData.download_columns,
         }
       };
       
@@ -191,6 +225,10 @@ const AdminSettings = () => {
           <TabsTrigger value="contact" className="min-h-[40px]">যোগাযোগ</TabsTrigger>
           <TabsTrigger value="appearance" className="min-h-[40px]">চেহারা</TabsTrigger>
           <TabsTrigger value="social" className="min-h-[40px]">সোশ্যাল মিডিয়া</TabsTrigger>
+          <TabsTrigger value="download" className="flex items-center gap-1 min-h-[40px]">
+            <Download className="h-3 w-3" />
+            ডাউনলোড
+          </TabsTrigger>
           <TabsTrigger value="ai" className="flex items-center gap-1 min-h-[40px]">
             <Sparkles className="h-3 w-3" />
             AI
@@ -510,6 +548,170 @@ const AdminSettings = () => {
                   onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
                   placeholder="https://instagram.com/yourprofile"
                 />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Download Template Settings Tab */}
+        <TabsContent value="download" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Download className="h-5 w-5 text-primary" />
+                ডাউনলোড টেমপ্লেট সেটিংস
+              </CardTitle>
+              <CardDescription>
+                আর্টিকেল PDF/ছবি ডাউনলোড টেমপ্লেট কাস্টমাইজ করুন
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Header Style */}
+              <div>
+                <Label className="mb-2 block">হেডার স্টাইল</Label>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <Button
+                    type="button"
+                    variant={formData.download_header_style === 'banner' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFormData({ ...formData, download_header_style: 'banner' })}
+                  >
+                    ব্যানার (লোগো সহ)
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={formData.download_header_style === 'text' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFormData({ ...formData, download_header_style: 'text' })}
+                  >
+                    শুধু টেক্সট
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  ডাউনলোড টেমপ্লেটের হেডারে ব্যানার স্টাইল বা শুধু টেক্সট দেখান
+                </p>
+              </div>
+
+              {/* Header Display Options */}
+              <div className="space-y-4">
+                <Label className="block font-medium">হেডার প্রদর্শন অপশন</Label>
+                
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">লোগো দেখান</p>
+                    <p className="text-xs text-muted-foreground">হেডারে সাইট লোগো প্রদর্শন</p>
+                  </div>
+                  <Switch
+                    checked={formData.download_show_logo}
+                    onCheckedChange={(checked) => setFormData({ ...formData, download_show_logo: checked })}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">সাইটের নাম দেখান</p>
+                    <p className="text-xs text-muted-foreground">হেডারে সাইটের নাম প্রদর্শন</p>
+                  </div>
+                  <Switch
+                    checked={formData.download_show_site_name}
+                    onCheckedChange={(checked) => setFormData({ ...formData, download_show_site_name: checked })}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">ট্যাগলাইন দেখান</p>
+                    <p className="text-xs text-muted-foreground">হেডারে সাইটের বিবরণ/ট্যাগলাইন প্রদর্শন</p>
+                  </div>
+                  <Switch
+                    checked={formData.download_show_tagline}
+                    onCheckedChange={(checked) => setFormData({ ...formData, download_show_tagline: checked })}
+                  />
+                </div>
+              </div>
+
+              {/* Content Options */}
+              <div className="space-y-4">
+                <Label className="block font-medium">কন্টেন্ট অপশন</Label>
+                
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">সংক্ষিপ্ত বিবরণ দেখান</p>
+                    <p className="text-xs text-muted-foreground">আর্টিকেলের সংক্ষিপ্ত বিবরণ/এক্সার্পট প্রদর্শন</p>
+                  </div>
+                  <Switch
+                    checked={formData.download_show_excerpt}
+                    onCheckedChange={(checked) => setFormData({ ...formData, download_show_excerpt: checked })}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">ট্যাগ দেখান</p>
+                    <p className="text-xs text-muted-foreground">আর্টিকেলের ট্যাগ প্রদর্শন</p>
+                  </div>
+                  <Switch
+                    checked={formData.download_show_tags}
+                    onCheckedChange={(checked) => setFormData({ ...formData, download_show_tags: checked })}
+                  />
+                </div>
+
+                {/* Column Layout */}
+                <div>
+                  <Label className="mb-2 block">কলাম লেআউট</Label>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <Button
+                      type="button"
+                      variant={formData.download_columns === 1 ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setFormData({ ...formData, download_columns: 1 })}
+                    >
+                      ১ কলাম
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={formData.download_columns === 2 ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setFormData({ ...formData, download_columns: 2 })}
+                    >
+                      ২ কলাম
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer Options */}
+              <div className="space-y-4">
+                <Label className="block font-medium">ফুটার অপশন</Label>
+                
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">ফুটারে লোগো দেখান</p>
+                    <p className="text-xs text-muted-foreground">ফুটারে সাইট লোগো প্রদর্শন</p>
+                  </div>
+                  <Switch
+                    checked={formData.download_show_footer_logo}
+                    onCheckedChange={(checked) => setFormData({ ...formData, download_show_footer_logo: checked })}
+                  />
+                </div>
+
+                <div>
+                  <Label>ফুটার ইমেইল</Label>
+                  <Input
+                    value={formData.download_footer_email}
+                    onChange={(e) => setFormData({ ...formData, download_footer_email: e.target.value })}
+                    placeholder="info@example.com (খালি রাখলে যোগাযোগ ইমেইল ব্যবহার হবে)"
+                  />
+                </div>
+
+                <div>
+                  <Label>ফুটার ওয়েবসাইট</Label>
+                  <Input
+                    value={formData.download_footer_website}
+                    onChange={(e) => setFormData({ ...formData, download_footer_website: e.target.value })}
+                    placeholder="www.example.com"
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
