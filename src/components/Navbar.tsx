@@ -80,7 +80,7 @@ const Navbar = () => {
 
   const siteName = settings?.site_name || 'নিউজ পোর্টাল';
   const socialMedia = settings?.social_media as Record<string, string> || {};
-  const logoDisplay = socialMedia.logo_display || 'both';
+  const logoDisplay = socialMedia.header_logo_display || socialMedia.logo_display || 'both';
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
