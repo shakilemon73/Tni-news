@@ -1,0 +1,14 @@
+# Cloudflare Pages Configuration
+name = "bangla-times"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist"
+
+# Note: Environment variables should be set in Cloudflare Pages Dashboard:
+# - SUPABASE_URL: Your Supabase project URL
+# - SUPABASE_ANON_KEY: Your Supabase anon/public key  
+# - SITE_URL: Your production site URL (e.g., https://yourdomain.com)
+# - SITE_NAME: বাংলা টাইমস
+
+# The functions/ directory contains Cloudflare Pages Functions
+# that handle Open Graph meta tags for social media crawlers

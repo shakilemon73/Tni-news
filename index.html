@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1" />
+    
+    <!-- Capacitor Mobile App Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="E-News Admin" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#1a1a2e" />
+    <meta name="format-detection" content="telephone=no" />
+    
+    <!-- Primary Meta Tags (will be overridden by React Helmet on article pages) -->
+    <title>Tni International News - সর্বশেষ খবর ও সংবাদ</title>
+    <meta name="description" content="Tni International News - বাংলাদেশ ও বিশ্বের সর্বশেষ খবর, রাজনীতি, অর্থনীতি, খেলাধুলা, বিনোদন, প্রযুক্তি সহ সকল বিষয়ে আপডেট।" />
+    <meta name="author" content="Tni International News" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://dainiktninews.com/" />
+    
+    <!-- Open Graph / Facebook (fallback for homepage, articles use dynamic OG from edge function) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dainiktninews.com/" />
+    <meta property="og:title" content="Tni International News - সর্বশেষ খবর ও সংবাদ" />
+    <meta property="og:description" content="Tni International News - বাংলাদেশ ও বিশ্বের সর্বশেষ খবর, রাজনীতি, অর্থনীতি, খেলাধুলা, বিনোদন, প্রযুক্তি সহ সকল বিষয়ে আপডেট।" />
+    <meta property="og:image" content="https://dainiktninews.com/logo.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Tni International News" />
+    <meta property="og:locale" content="bn_BD" />
+
+    <!-- Twitter Card (fallback) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://dainiktninews.com/" />
+    <meta name="twitter:title" content="Tni International News - সর্বশেষ খবর ও সংবাদ" />
+    <meta name="twitter:description" content="Tni International News - বাংলাদেশ ও বিশ্বের সর্বশেষ খবর, রাজনীতি, অর্থনীতি, খেলাধুলা, বিনোদন, প্রযুক্তি সহ সকল বিষয়ে আপডেট।" />
+    <meta name="twitter:image" content="https://dainiktninews.com/logo.png" />
+    <meta name="twitter:site" content="@tni_news" />
+    
+    <!-- Favicon & Logo -->
+    <link rel="icon" type="image/png" href="/favicon.png" id="favicon" />
+    <link rel="apple-touch-icon" href="/logo.png" id="apple-touch-icon" />
+    <link rel="shortcut icon" href="/favicon.png" type="image/png" />
+    
+    <!-- Bengali Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Dynamic Settings Loader (fetches logo/favicon from Supabase) -->
+    <script>
+      (function() {
+        // Only run on client side, not for bots (bots get OG from edge function)
+        if (typeof window === 'undefined') return;
+        
+        // Fetch settings from Supabase to update favicon/logo dynamically
+        var supabaseUrl = '__VITE_SUPABASE_URL__';
+        var supabaseKey = '__VITE_SUPABASE_PUBLISHABLE_KEY__';
+        
+        // Skip if env vars not replaced (dev mode)
+        if (supabaseUrl.includes('__VITE_')) return;
+        
+        fetch(supabaseUrl + '/rest/v1/settings?select=site_name,logo,favicon&order=id.asc&limit=1', {
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': 'Bearer ' + supabaseKey
+          }
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data[0]) {
+            var settings = data[0];
+            
+            // Update favicon if available
+            if (settings.favicon) {
+              var faviconEl = document.getElementById('favicon');
+              if (faviconEl) faviconEl.href = settings.favicon;
+            }
+            
+            // Update apple-touch-icon if logo available
+            if (settings.logo) {
+              var appleIcon = document.getElementById('apple-touch-icon');
+              if (appleIcon) appleIcon.href = settings.logo;
+            }
+            
+            // Update title if site_name available
+            if (settings.site_name && !document.title.includes('|')) {
+              document.title = settings.site_name + ' - সর্বশেষ খবর ও সংবাদ';
+            }
+          }
+        })
+        .catch(function() {});
+      })();
+    </script>
+    <!-- FOUC Prevention: Hide body until CSS loads -->
+    <style>
+      /* Prevent FOUC by hiding content until styles load */
+      html { visibility: hidden; }
+      html.fouc-ready { visibility: visible; }
+      
+      /* Fallback: Show content after 200ms even if JS fails */
+      @keyframes fouc-fallback {
+        to { visibility: visible; }
+      }
+      html { animation: fouc-fallback 0s 0.2s forwards; }
+    </style>
+  </head>
+
+  <body class="bg-background">
+    <div id="root">
+      <!-- Initial loading placeholder -->
+      <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #fff; font-family: 'Hind Siliguri', sans-serif;">
+        <div style="text-align: center;">
+          <div style="width: 40px; height: 40px; border: 3px solid #e5e7eb; border-top-color: #0284c7; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+          <p style="color: #6b7280; font-size: 14px;">লোড হচ্ছে...</p>
+        </div>
+      </div>
+      <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+      </style>
+    </div>
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- Mark document ready after main styles load -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        document.documentElement.classList.add('fouc-ready');
+      });
+    </script>
+  </body>
+</html>

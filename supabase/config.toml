@@ -1,0 +1,10 @@
+project_id = "lgxeeairbvukecqomfwj"
+
+[functions.r2-storage]
+verify_jwt = false
+
+[functions.og-meta]
+verify_jwt = false
+
+[functions.article-ai]
+verify_jwt = false

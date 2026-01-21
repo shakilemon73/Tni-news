@@ -1,0 +1,498 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 203 83% 45%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    /* Psychological Color System - Aarron Walter */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 0%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    /* Focus ring for accessibility - Farai Madzima */
+    --focus-ring: 203 83% 45%;
+    --focus-ring-offset: 0 0% 100%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    /* Dark mode psychological colors */
+    --success: 142 70% 45%;
+    --warning: 38 85% 55%;
+    --info: 199 85% 55%;
+
+    --focus-ring: 210 40% 98%;
+    --focus-ring-offset: 222.2 84% 4.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+    /* Susan Weinschenk - Optimal line height for readability */
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bangla font-bold text-foreground;
+    /* Luke Wroblewski - Clear hierarchy */
+    line-height: 1.2;
+  }
+
+  p, a, span, div {
+    @apply text-foreground;
+  }
+
+  /* Don Norman - Focus states for discoverability */
+  :focus-visible {
+    @apply outline-none ring-2 ring-offset-2;
+    ring-color: hsl(var(--focus-ring));
+    ring-offset-color: hsl(var(--focus-ring-offset));
+  }
+
+  /* Farai Madzima - Skip to main content for accessibility */
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md;
+  }
+
+  /* Susan Weinschenk - Selection colors */
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+}
+
+@layer components {
+  .news-container {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+    max-width: 100%;
+  }
+  
+  @screen sm {
+    .news-container {
+      max-width: 640px;
+    }
+  }
+  
+  @screen md {
+    .news-container {
+      max-width: 768px;
+    }
+  }
+  
+  @screen lg {
+    .news-container {
+      max-width: 1024px;
+    }
+  }
+  
+  @screen xl {
+    .news-container {
+      max-width: 1280px;
+    }
+  }
+  
+  .news-title {
+    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-foreground hover:text-primary transition-colors duration-200;
+  }
+  
+  .news-subtitle {
+    @apply text-base md:text-lg font-medium text-foreground hover:text-primary transition-colors duration-200;
+  }
+  
+  .news-category {
+    @apply text-xs font-semibold uppercase tracking-wider text-primary;
+  }
+  
+  .news-date {
+    @apply text-sm text-muted-foreground;
+  }
+  
+  .news-link {
+    @apply hover:text-primary transition-colors duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-all duration-200 active:scale-[0.98];
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/90 transition-all duration-200 active:scale-[0.98];
+  }
+  
+  .section-heading {
+    @apply text-xl sm:text-2xl font-bold text-foreground border-b border-border pb-2 mb-4;
+  }
+  
+  /* Dieter Rams - Clean, purposeful card design */
+  .article-card {
+    @apply bg-card rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-3 sm:p-4;
+    @apply border border-transparent hover:border-border;
+  }
+  
+  .article-image {
+    @apply rounded-md overflow-hidden w-full h-auto;
+  }
+
+  .reading-time {
+    @apply text-xs text-muted-foreground flex items-center;
+  }
+  
+  .horizontal-scroll {
+    @apply flex overflow-x-auto gap-3 sm:gap-4 pb-4 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Mobile-first responsive utilities - Luke Wroblewski */
+  .mobile-stack {
+    @apply flex flex-col sm:flex-row;
+  }
+  
+  .mobile-full {
+    @apply w-full sm:w-auto;
+  }
+  
+  .mobile-hide {
+    @apply hidden sm:block;
+  }
+  
+  .mobile-show {
+    @apply block sm:hidden;
+  }
+
+  /* ========================================
+     PSYCHOLOGICAL UX ENHANCEMENTS
+     ======================================== */
+
+  /* Don Norman - Visual Affordances & Signifiers */
+  .interactive {
+    @apply cursor-pointer transition-all duration-200;
+    @apply hover:opacity-90 active:scale-[0.98];
+  }
+
+  .clickable-card {
+    @apply cursor-pointer transition-all duration-300;
+    @apply hover:shadow-lg hover:-translate-y-0.5;
+    @apply active:translate-y-0 active:shadow-md;
+  }
+
+  /* Steve Krug - Clear Navigation States */
+  .nav-link {
+    @apply relative px-3 py-2 text-foreground/80 font-medium transition-colors duration-200;
+    @apply hover:text-primary;
+  }
+  
+  .nav-link.active {
+    @apply text-primary;
+  }
+  
+  .nav-link::after {
+    @apply content-[''] absolute bottom-0 left-0 w-full h-0.5 bg-primary;
+    @apply scale-x-0 origin-left transition-transform duration-200;
+  }
+  
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    @apply scale-x-100;
+  }
+
+  /* Luke Wroblewski - Touch-friendly targets (44px minimum) */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  /* Aarron Walter - Delightful Micro-interactions */
+  .hover-lift {
+    @apply transition-all duration-300 ease-out;
+    @apply hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300;
+    @apply hover:shadow-[0_0_20px_rgba(var(--primary),0.3)];
+  }
+
+  .pulse-gentle {
+    animation: gentle-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes gentle-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+
+  /* Jonathan Ive - Subtle Depth & Shadows */
+  .shadow-soft {
+    box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.08),
+                0 4px 16px -4px rgba(0, 0, 0, 0.06);
+  }
+
+  .shadow-elevated {
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.12),
+                0 8px 24px -4px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Julie Zhuo - Systematic Spacing (8px grid) */
+  .spacing-section {
+    @apply py-8 md:py-12 lg:py-16;
+  }
+
+  .spacing-component {
+    @apply p-4 md:p-6;
+  }
+
+  /* Farai Madzima - High Contrast Status Indicators */
+  .status-success {
+    @apply bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))];
+  }
+
+  .status-warning {
+    @apply bg-[hsl(var(--warning))] text-[hsl(var(--warning-foreground))];
+  }
+
+  .status-info {
+    @apply bg-[hsl(var(--info))] text-[hsl(var(--info-foreground))];
+  }
+
+  .status-error {
+    @apply bg-destructive text-destructive-foreground;
+  }
+
+  /* Alan Cooper - Error Prevention & Forgiveness */
+  .form-field {
+    @apply space-y-2;
+  }
+
+  .form-label {
+    @apply text-sm font-medium text-foreground;
+  }
+
+  .form-input {
+    @apply w-full px-4 py-3 rounded-md border border-input bg-background;
+    @apply transition-all duration-200;
+    @apply focus:border-primary focus:ring-2 focus:ring-primary/20;
+    @apply placeholder:text-muted-foreground;
+  }
+
+  .form-error {
+    @apply text-sm text-destructive flex items-center gap-1 animate-fade-in;
+  }
+
+  .form-helper {
+    @apply text-xs text-muted-foreground;
+  }
+
+  /* Susan Weinschenk - Information Chunking */
+  .content-chunk {
+    @apply p-6 rounded-lg bg-card border border-border;
+  }
+
+  .content-divider {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-border to-transparent my-8;
+  }
+
+  /* Steve Krug - Scannable Content */
+  .scannable-text {
+    @apply text-base leading-relaxed;
+  }
+
+  .scannable-text p {
+    @apply mb-4 last:mb-0;
+  }
+
+  /* Breadcrumb Navigation */
+  .breadcrumb {
+    @apply flex items-center gap-2 text-sm text-muted-foreground;
+  }
+
+  .breadcrumb-item {
+    @apply hover:text-primary transition-colors;
+  }
+
+  .breadcrumb-separator {
+    @apply text-muted-foreground/50;
+  }
+
+  .breadcrumb-current {
+    @apply text-foreground font-medium;
+  }
+
+  /* Loading States - Aarron Walter */
+  .skeleton {
+    @apply relative overflow-hidden bg-muted rounded;
+  }
+
+  .skeleton::after {
+    @apply absolute inset-0;
+    content: '';
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Image Loading State */
+  .image-loading {
+    @apply bg-muted animate-pulse;
+  }
+
+  /* Badge Variants */
+  .badge-live {
+    @apply bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded;
+    animation: pulse-live 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-live {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  /* Social Proof Indicators */
+  .view-count {
+    @apply text-xs text-muted-foreground flex items-center gap-1;
+  }
+
+  /* Staggered Animation for Lists */
+  .stagger-item {
+    @apply opacity-0 animate-fade-in;
+  }
+
+  .stagger-item:nth-child(1) { animation-delay: 0ms; }
+  .stagger-item:nth-child(2) { animation-delay: 50ms; }
+  .stagger-item:nth-child(3) { animation-delay: 100ms; }
+  .stagger-item:nth-child(4) { animation-delay: 150ms; }
+  .stagger-item:nth-child(5) { animation-delay: 200ms; }
+  .stagger-item:nth-child(6) { animation-delay: 250ms; }
+  .stagger-item:nth-child(7) { animation-delay: 300ms; }
+  .stagger-item:nth-child(8) { animation-delay: 350ms; }
+
+  /* Focus Within for Form Groups */
+  .focus-within-highlight {
+    @apply transition-all duration-200;
+  }
+
+  .focus-within-highlight:focus-within {
+    @apply ring-2 ring-primary/20 rounded-lg;
+  }
+
+  /* Capacitor Mobile App Safe Area Support */
+  .safe-area-inset {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Mobile touch optimization */
+  .touch-action-manipulation {
+    touch-action: manipulation;
+  }
+
+  /* Prevent text selection on mobile buttons */
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
