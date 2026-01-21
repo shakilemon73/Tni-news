@@ -25,7 +25,8 @@ const AdminSettings = () => {
     site_description: '',
     logo: '',
     favicon: '',
-    logo_display: 'both' as 'logo_only' | 'text_only' | 'both',
+    header_logo_display: 'both' as 'logo_only' | 'text_only' | 'both',
+    footer_logo_display: 'both' as 'logo_only' | 'text_only' | 'both',
     facebook: '',
     twitter: '',
     youtube: '',
@@ -52,7 +53,8 @@ const AdminSettings = () => {
           site_description: data.site_description || '',
           logo: data.logo || '',
           favicon: data.favicon || '',
-          logo_display: (socialMedia.logo_display as 'logo_only' | 'text_only' | 'both') || 'both',
+          header_logo_display: (socialMedia.header_logo_display as 'logo_only' | 'text_only' | 'both') || (socialMedia.logo_display as 'logo_only' | 'text_only' | 'both') || 'both',
+          footer_logo_display: (socialMedia.footer_logo_display as 'logo_only' | 'text_only' | 'both') || 'both',
           facebook: socialMedia.facebook || '',
           twitter: socialMedia.twitter || '',
           youtube: socialMedia.youtube || '',
@@ -89,7 +91,8 @@ const AdminSettings = () => {
           twitter: formData.twitter,
           youtube: formData.youtube,
           instagram: formData.instagram,
-          logo_display: formData.logo_display // Store in social_media JSON
+          header_logo_display: formData.header_logo_display,
+          footer_logo_display: formData.footer_logo_display
         }
       };
       
@@ -219,37 +222,71 @@ const AdminSettings = () => {
                 />
               </div>
               
-              {/* Logo Display Toggle - Moved to General */}
+              {/* Header Logo Display Toggle */}
               <div>
                 <Label className="mb-2 block">হেডারে লোগো প্রদর্শন</Label>
-                <div className="flex gap-2 mt-2">
+                <div className="flex flex-wrap gap-2 mt-2">
                   <Button
                     type="button"
-                    variant={formData.logo_display === 'logo_only' ? 'default' : 'outline'}
+                    variant={formData.header_logo_display === 'logo_only' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setFormData({ ...formData, logo_display: 'logo_only' })}
+                    onClick={() => setFormData({ ...formData, header_logo_display: 'logo_only' })}
                   >
                     শুধু লোগো
                   </Button>
                   <Button
                     type="button"
-                    variant={formData.logo_display === 'text_only' ? 'default' : 'outline'}
+                    variant={formData.header_logo_display === 'text_only' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setFormData({ ...formData, logo_display: 'text_only' })}
+                    onClick={() => setFormData({ ...formData, header_logo_display: 'text_only' })}
                   >
                     শুধু টেক্সট
                   </Button>
                   <Button
                     type="button"
-                    variant={formData.logo_display === 'both' ? 'default' : 'outline'}
+                    variant={formData.header_logo_display === 'both' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setFormData({ ...formData, logo_display: 'both' })}
+                    onClick={() => setFormData({ ...formData, header_logo_display: 'both' })}
                   >
                     দুইটাই
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
                   নির্বাচন করুন হেডারে লোগো, সাইটের নাম অথবা দুইটাই দেখাতে চান
+                </p>
+              </div>
+
+              {/* Footer Logo Display Toggle */}
+              <div>
+                <Label className="mb-2 block">ফুটারে লোগো প্রদর্শন</Label>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <Button
+                    type="button"
+                    variant={formData.footer_logo_display === 'logo_only' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFormData({ ...formData, footer_logo_display: 'logo_only' })}
+                  >
+                    শুধু লোগো
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={formData.footer_logo_display === 'text_only' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFormData({ ...formData, footer_logo_display: 'text_only' })}
+                  >
+                    শুধু টেক্সট
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={formData.footer_logo_display === 'both' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFormData({ ...formData, footer_logo_display: 'both' })}
+                  >
+                    দুইটাই
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  নির্বাচন করুন ফুটারে লোগো, সাইটের নাম অথবা দুইটাই দেখাতে চান
                 </p>
               </div>
             </CardContent>

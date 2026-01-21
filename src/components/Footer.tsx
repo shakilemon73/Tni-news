@@ -46,7 +46,7 @@ const Footer = () => {
   ];
 
   const siteName = settings?.site_name || 'নিউজ পোর্টাল';
-  const logoDisplay = socialMedia.logo_display || 'both';
+  const logoDisplay = socialMedia.footer_logo_display || 'both';
 
   return (
     <footer className="bg-news-900" role="contentinfo">
