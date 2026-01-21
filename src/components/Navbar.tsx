@@ -144,7 +144,7 @@ const Navbar = () => {
                   <img 
                     src={settings.logo} 
                     alt={siteName}
-                    className="h-8 sm:h-10 md:h-12 w-auto object-contain flex-shrink-0"
+                    className="h-10 sm:h-12 md:h-14 lg:h-16 xl:h-[72px] w-auto object-contain flex-shrink-0 transition-all duration-200"
                   />
                 )}
                 {(logoDisplay === 'text_only' || logoDisplay === 'both') && (
