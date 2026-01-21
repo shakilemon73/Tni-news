@@ -67,6 +67,7 @@ const splitIntoParagraphs = (text: string): string[] => {
 const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [downloadType, setDownloadType] = useState<'png' | 'pdf'>('png');
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const templateRef = useRef<HTMLDivElement>(null);
 
@@ -168,11 +169,23 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setShowPreview(true)} className="gap-2 cursor-pointer">
+          <DropdownMenuItem 
+            onClick={() => {
+              setDownloadType('png');
+              setShowPreview(true);
+            }} 
+            className="gap-2 cursor-pointer"
+          >
             <FileImage className="h-4 w-4" />
             ছবি হিসেবে ডাউনলোড (PNG)
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setShowPreview(true)} className="gap-2 cursor-pointer">
+          <DropdownMenuItem 
+            onClick={() => {
+              setDownloadType('pdf');
+              setShowPreview(true);
+            }} 
+            className="gap-2 cursor-pointer"
+          >
             <FileText className="h-4 w-4" />
             PDF হিসেবে ডাউনলোড
           </DropdownMenuItem>
@@ -185,25 +198,27 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
             <DialogTitle className="flex items-center justify-between">
               <span>ডাউনলোড প্রিভিউ</span>
               <div className="flex gap-2">
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  onClick={generateImage}
-                  disabled={isGenerating}
-                  className="gap-2"
-                >
-                  {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileImage className="h-4 w-4" />}
-                  PNG ডাউনলোড
-                </Button>
-                <Button 
-                  size="sm" 
-                  onClick={generatePDF}
-                  disabled={isGenerating}
-                  className="gap-2"
-                >
-                  {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
-                  PDF ডাউনলোড
-                </Button>
+                {downloadType === 'png' ? (
+                  <Button 
+                    size="sm" 
+                    onClick={generateImage}
+                    disabled={isGenerating}
+                    className="gap-2"
+                  >
+                    {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileImage className="h-4 w-4" />}
+                    PNG ডাউনলোড
+                  </Button>
+                ) : (
+                  <Button 
+                    size="sm" 
+                    onClick={generatePDF}
+                    disabled={isGenerating}
+                    className="gap-2"
+                  >
+                    {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
+                    PDF ডাউনলোড
+                  </Button>
+                )}
               </div>
             </DialogTitle>
           </DialogHeader>
