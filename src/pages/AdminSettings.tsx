@@ -47,6 +47,14 @@ const AdminSettings = () => {
     download_show_tags: true,
     download_show_excerpt: true,
     download_columns: 2 as 1 | 2,
+    // Watermark settings
+    download_watermark_enabled: false,
+    download_watermark_type: 'text' as 'text' | 'logo',
+    download_watermark_text: '',
+    download_watermark_opacity: 30,
+    download_watermark_position: 'center' as 'center' | 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left',
+    // Footer display mode
+    download_footer_display: 'both' as 'logo_only' | 'text_only' | 'both',
   });
 
   useEffect(() => {
@@ -86,6 +94,14 @@ const AdminSettings = () => {
           download_show_tags: socialMedia.download_show_tags !== false,
           download_show_excerpt: socialMedia.download_show_excerpt !== false,
           download_columns: (socialMedia.download_columns as 1 | 2) || 2,
+          // Watermark settings
+          download_watermark_enabled: socialMedia.download_watermark_enabled || false,
+          download_watermark_type: (socialMedia.download_watermark_type as 'text' | 'logo') || 'text',
+          download_watermark_text: socialMedia.download_watermark_text || '',
+          download_watermark_opacity: socialMedia.download_watermark_opacity || 30,
+          download_watermark_position: (socialMedia.download_watermark_position as 'center' | 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left') || 'center',
+          // Footer display mode
+          download_footer_display: (socialMedia.download_footer_display as 'logo_only' | 'text_only' | 'both') || 'both',
         });
       }
     } catch (error) {
@@ -127,6 +143,14 @@ const AdminSettings = () => {
           download_show_tags: formData.download_show_tags,
           download_show_excerpt: formData.download_show_excerpt,
           download_columns: formData.download_columns,
+          // Watermark settings
+          download_watermark_enabled: formData.download_watermark_enabled,
+          download_watermark_type: formData.download_watermark_type,
+          download_watermark_text: formData.download_watermark_text,
+          download_watermark_opacity: formData.download_watermark_opacity,
+          download_watermark_position: formData.download_watermark_position,
+          // Footer display mode
+          download_footer_display: formData.download_footer_display,
         }
       };
       
@@ -680,19 +704,155 @@ const AdminSettings = () => {
                 </div>
               </div>
 
-              {/* Footer Options */}
+              {/* Watermark Options */}
               <div className="space-y-4">
-                <Label className="block font-medium">ফুটার অপশন</Label>
+                <Label className="block font-medium">ওয়াটারমার্ক অপশন</Label>
                 
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div>
-                    <p className="font-medium">ফুটারে লোগো দেখান</p>
-                    <p className="text-xs text-muted-foreground">ফুটারে সাইট লোগো প্রদর্শন</p>
+                    <p className="font-medium">ওয়াটারমার্ক সক্রিয় করুন</p>
+                    <p className="text-xs text-muted-foreground">ডাউনলোড টেমপ্লেটে ওয়াটারমার্ক যোগ করুন</p>
                   </div>
                   <Switch
-                    checked={formData.download_show_footer_logo}
-                    onCheckedChange={(checked) => setFormData({ ...formData, download_show_footer_logo: checked })}
+                    checked={formData.download_watermark_enabled}
+                    onCheckedChange={(checked) => setFormData({ ...formData, download_watermark_enabled: checked })}
                   />
+                </div>
+
+                {formData.download_watermark_enabled && (
+                  <>
+                    <div>
+                      <Label className="mb-2 block">ওয়াটারমার্ক টাইপ</Label>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <Button
+                          type="button"
+                          variant={formData.download_watermark_type === 'text' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setFormData({ ...formData, download_watermark_type: 'text' })}
+                        >
+                          টেক্সট
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={formData.download_watermark_type === 'logo' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setFormData({ ...formData, download_watermark_type: 'logo' })}
+                        >
+                          লোগো
+                        </Button>
+                      </div>
+                    </div>
+
+                    {formData.download_watermark_type === 'text' && (
+                      <div>
+                        <Label>ওয়াটারমার্ক টেক্সট</Label>
+                        <Input
+                          value={formData.download_watermark_text}
+                          onChange={(e) => setFormData({ ...formData, download_watermark_text: e.target.value })}
+                          placeholder="সাইটের নাম বা কাস্টম টেক্সট (খালি রাখলে সাইটের নাম ব্যবহার হবে)"
+                        />
+                      </div>
+                    )}
+
+                    <div>
+                      <Label className="mb-2 block">ওয়াটারমার্ক পজিশন</Label>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <Button
+                          type="button"
+                          variant={formData.download_watermark_position === 'center' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setFormData({ ...formData, download_watermark_position: 'center' })}
+                        >
+                          মাঝখানে
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={formData.download_watermark_position === 'bottom-right' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setFormData({ ...formData, download_watermark_position: 'bottom-right' })}
+                        >
+                          নিচে ডানে
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={formData.download_watermark_position === 'bottom-left' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setFormData({ ...formData, download_watermark_position: 'bottom-left' })}
+                        >
+                          নিচে বামে
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={formData.download_watermark_position === 'top-right' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setFormData({ ...formData, download_watermark_position: 'top-right' })}
+                        >
+                          উপরে ডানে
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={formData.download_watermark_position === 'top-left' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setFormData({ ...formData, download_watermark_position: 'top-left' })}
+                        >
+                          উপরে বামে
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="mb-2 block">ওয়াটারমার্ক স্বচ্ছতা: {formData.download_watermark_opacity}%</Label>
+                      <input
+                        type="range"
+                        min="10"
+                        max="100"
+                        value={formData.download_watermark_opacity}
+                        onChange={(e) => setFormData({ ...formData, download_watermark_opacity: parseInt(e.target.value) })}
+                        className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        কম মান = বেশি স্বচ্ছ, বেশি মান = কম স্বচ্ছ
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Footer Options */}
+              <div className="space-y-4">
+                <Label className="block font-medium">ফুটার অপশন</Label>
+
+                <div>
+                  <Label className="mb-2 block">ফুটার প্রদর্শন মোড</Label>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <Button
+                      type="button"
+                      variant={formData.download_footer_display === 'logo_only' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setFormData({ ...formData, download_footer_display: 'logo_only' })}
+                    >
+                      শুধু লোগো
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={formData.download_footer_display === 'text_only' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setFormData({ ...formData, download_footer_display: 'text_only' })}
+                    >
+                      শুধু টেক্সট
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={formData.download_footer_display === 'both' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setFormData({ ...formData, download_footer_display: 'both' })}
+                    >
+                      দুইটাই
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    ফুটারে লোগো, টেক্সট বা দুইটাই দেখাতে চান নির্বাচন করুন
+                  </p>
                 </div>
 
                 <div>

@@ -76,6 +76,14 @@ interface DownloadTemplateSettings {
   showTags: boolean;
   showExcerpt: boolean;
   columns: 1 | 2;
+  // Watermark settings
+  watermarkEnabled: boolean;
+  watermarkType: 'text' | 'logo';
+  watermarkText: string;
+  watermarkOpacity: number;
+  watermarkPosition: 'center' | 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
+  // Footer display mode
+  footerDisplay: 'logo_only' | 'text_only' | 'both';
 }
 
 const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadProps) => {
@@ -117,6 +125,39 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
     showTags: socialMedia.download_show_tags !== false,
     showExcerpt: socialMedia.download_show_excerpt !== false,
     columns: (socialMedia.download_columns as 1 | 2) || 2,
+    // Watermark settings
+    watermarkEnabled: socialMedia.download_watermark_enabled || false,
+    watermarkType: (socialMedia.download_watermark_type as 'text' | 'logo') || 'text',
+    watermarkText: socialMedia.download_watermark_text || '',
+    watermarkOpacity: socialMedia.download_watermark_opacity || 30,
+    watermarkPosition: (socialMedia.download_watermark_position as 'center' | 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left') || 'center',
+    // Footer display mode
+    footerDisplay: (socialMedia.download_footer_display as 'logo_only' | 'text_only' | 'both') || 'both',
+  };
+
+  // Get watermark position styles
+  const getWatermarkPositionStyles = () => {
+    const baseStyles: React.CSSProperties = {
+      position: 'absolute',
+      opacity: templateSettings.watermarkOpacity / 100,
+      pointerEvents: 'none',
+      zIndex: 10,
+    };
+    
+    switch (templateSettings.watermarkPosition) {
+      case 'center':
+        return { ...baseStyles, top: '50%', left: '50%', transform: 'translate(-50%, -50%) rotate(-30deg)' };
+      case 'bottom-right':
+        return { ...baseStyles, bottom: '20px', right: '20px' };
+      case 'bottom-left':
+        return { ...baseStyles, bottom: '20px', left: '20px' };
+      case 'top-right':
+        return { ...baseStyles, top: '20px', right: '20px' };
+      case 'top-left':
+        return { ...baseStyles, top: '20px', left: '20px' };
+      default:
+        return baseStyles;
+    }
   };
 
   const generateImage = async () => {
@@ -255,11 +296,12 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
           {/* Newspaper Template */}
           <div 
             ref={templateRef} 
-            className="bg-white p-8 shadow-lg border"
+            className="bg-white p-8 shadow-lg border relative"
             style={{ 
               width: '800px', 
               fontFamily: "'Hind Siliguri', 'Noto Sans Bengali', sans-serif",
-              color: '#000000'
+              color: '#000000',
+              position: 'relative',
             }}
           >
             {/* Header - Newspaper Masthead */}
@@ -402,11 +444,40 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
               </div>
             )}
 
+            {/* Watermark */}
+            {templateSettings.watermarkEnabled && (
+              <div style={getWatermarkPositionStyles()}>
+                {templateSettings.watermarkType === 'logo' && settings?.logo ? (
+                  <img 
+                    src={settings.logo} 
+                    alt="Watermark"
+                    style={{ 
+                      maxWidth: templateSettings.watermarkPosition === 'center' ? '200px' : '80px',
+                      height: 'auto',
+                    }}
+                    crossOrigin="anonymous"
+                  />
+                ) : (
+                  <span 
+                    style={{ 
+                      fontSize: templateSettings.watermarkPosition === 'center' ? '48px' : '16px',
+                      fontWeight: 'bold',
+                      color: '#000000',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {templateSettings.watermarkText || siteName}
+                  </span>
+                )}
+              </div>
+            )}
+
             {/* Footer */}
             <div className="border-t-2 border-black pt-4 mt-4">
               <div className="flex justify-between items-center text-xs" style={{ color: '#4a4a4a' }}>
+                {/* Left side - Logo and/or Text based on footer display mode */}
                 <div className="flex items-center gap-2">
-                  {templateSettings.showFooterLogo && settings?.logo && (
+                  {(templateSettings.footerDisplay === 'logo_only' || templateSettings.footerDisplay === 'both') && settings?.logo && (
                     <img 
                       src={settings.logo} 
                       alt={siteName}
@@ -414,10 +485,12 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
                       crossOrigin="anonymous"
                     />
                   )}
-                  <div>
-                    <p className="font-semibold">{siteName}</p>
-                    <p>{siteTagline}</p>
-                  </div>
+                  {(templateSettings.footerDisplay === 'text_only' || templateSettings.footerDisplay === 'both') && (
+                    <div>
+                      <p className="font-semibold">{siteName}</p>
+                      <p>{siteTagline}</p>
+                    </div>
+                  )}
                 </div>
                 <div className="text-right">
                   <p>ই-মেইল: {templateSettings.footerEmail}</p>
