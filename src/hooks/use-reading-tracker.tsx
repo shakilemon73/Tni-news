@@ -11,7 +11,7 @@ export const useReadingTracker = ({ articleId, trackTime = true }: UseReadingTra
   const { user } = useAuth();
   const startTimeRef = useRef<number>(Date.now());
   const trackedRef = useRef<boolean>(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Track reading when component mounts
   const trackReading = useCallback(async (duration?: number) => {
