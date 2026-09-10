@@ -67,7 +67,7 @@ export const updateMenu = async (id: string, menu: Partial<Menu>): Promise<Menu>
 
   const { data, error } = await supabase
     .from('menus')
-    .update(updateData)
+    .update(updateData as never)
     .eq('id', id)
     .select()
     .single();

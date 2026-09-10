@@ -160,21 +160,37 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
     }
   };
 
+  // Capture the template at its exact content size (no extra padding / blank space)
+  const captureCanvas = async () => {
+    const node = templateRef.current!;
+    const width = Math.ceil(node.scrollWidth);
+    const height = Math.ceil(node.getBoundingClientRect().height);
+
+    return html2canvas(node, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      width,
+      height,
+      windowWidth: width,
+      windowHeight: height,
+      scrollX: 0,
+      scrollY: 0,
+    });
+  };
+
   const generateImage = async () => {
     if (!templateRef.current) return;
     
     setIsGenerating(true);
     try {
-      const canvas = await html2canvas(templateRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-      });
+      const canvas = await captureCanvas();
       
       const link = document.createElement('a');
-      link.download = `${article.slug || 'article'}-bangla-times.png`;
+      link.download = `${article.slug || 'article'}-${siteName}.png`;
+      // JPEG-quality PNG: keep PNG for text sharpness
       link.href = canvas.toDataURL('image/png');
       link.click();
       
@@ -193,31 +209,33 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
     
     setIsGenerating(true);
     try {
-      const canvas = await html2canvas(templateRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-      });
-      
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      const imgY = 10;
-      
-      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-      pdf.save(`${article.slug || 'article'}-bangla-times.pdf`);
+      const canvas = await captureCanvas();
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 8;
+      const usableWidth = pageWidth - margin * 2;
+      const usableHeight = pageHeight - margin * 2;
+
+      // Scale to full usable width, then split across pages if taller than one page
+      const fullHeight = (canvas.height * usableWidth) / canvas.width;
+
+      if (fullHeight <= usableHeight) {
+        pdf.addImage(imgData, 'JPEG', margin, margin, usableWidth, fullHeight);
+      } else {
+        let remaining = fullHeight;
+        let offset = 0;
+        while (remaining > 0.5) {
+          pdf.addImage(imgData, 'JPEG', margin, margin - offset, usableWidth, fullHeight);
+          remaining -= usableHeight;
+          offset += usableHeight;
+          if (remaining > 0.5) pdf.addPage();
+        }
+      }
+
+      pdf.save(`${article.slug || 'article'}-${siteName}.pdf`);
       
       toast.success('PDF ডাউনলোড হয়েছে');
       setShowPreview(false);
@@ -293,15 +311,19 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
             </DialogTitle>
           </DialogHeader>
 
-          {/* Newspaper Template */}
+          {/* Newspaper Template (wrapper holds the shadow so the capture stays clean) */}
+          <div className="overflow-x-auto flex justify-center">
           <div 
             ref={templateRef} 
-            className="bg-white p-8 shadow-lg border relative"
+            className="bg-white relative"
             style={{ 
-              width: '800px', 
+              width: '800px',
+              padding: '24px',
+              boxSizing: 'border-box',
               fontFamily: "'Hind Siliguri', 'Noto Sans Bengali', sans-serif",
               color: '#000000',
               position: 'relative',
+              overflow: 'hidden',
             }}
           >
             {/* Header - Newspaper Masthead */}
@@ -503,6 +525,7 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
                 </p>
               </div>
             </div>
+          </div>
           </div>
         </DialogContent>
       </Dialog>
