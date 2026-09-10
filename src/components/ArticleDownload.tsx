@@ -311,15 +311,19 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
             </DialogTitle>
           </DialogHeader>
 
-          {/* Newspaper Template */}
+          {/* Newspaper Template (wrapper holds the shadow so the capture stays clean) */}
+          <div className="overflow-x-auto flex justify-center">
           <div 
             ref={templateRef} 
-            className="bg-white p-8 shadow-lg border relative"
+            className="bg-white relative"
             style={{ 
-              width: '800px', 
+              width: '800px',
+              padding: '24px',
+              boxSizing: 'border-box',
               fontFamily: "'Hind Siliguri', 'Noto Sans Bengali', sans-serif",
               color: '#000000',
               position: 'relative',
+              overflow: 'hidden',
             }}
           >
             {/* Header - Newspaper Masthead */}
