@@ -46,6 +46,7 @@ import Layout from "./components/Layout";
 import AdminLayout from "./components/AdminLayout";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
+import SiteFavicon from "./components/SiteFavicon";
 
 // Create a user preferences context
 export const UserPreferencesContext = createContext({
@@ -120,6 +121,7 @@ const App = () => {
           }}>
             <TooltipProvider>
               <ErrorBoundary>
+                <SiteFavicon />
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
