@@ -526,6 +526,7 @@ const ArticleDownload = ({ article, categoryName, authorName }: ArticleDownloadP
               </div>
             </div>
           </div>
+          </div>
         </DialogContent>
       </Dialog>
     </>
