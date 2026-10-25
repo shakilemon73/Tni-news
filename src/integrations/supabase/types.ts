@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
@@ -74,6 +74,7 @@ export type Database = {
       articles: {
         Row: {
           author_id: string
+          author_name: string | null
           category_ids: string[] | null
           content: string
           created_at: string
@@ -88,12 +89,14 @@ export type Database = {
           slug: string
           status: string
           tags: string[] | null
+          thumbnail_url: string | null
           title: string
           updated_at: string
           views: number
         }
         Insert: {
           author_id: string
+          author_name?: string | null
           category_ids?: string[] | null
           content?: string
           created_at?: string
@@ -108,12 +111,14 @@ export type Database = {
           slug: string
           status?: string
           tags?: string[] | null
+          thumbnail_url?: string | null
           title: string
           updated_at?: string
           views?: number
         }
         Update: {
           author_id?: string
+          author_name?: string | null
           category_ids?: string[] | null
           content?: string
           created_at?: string
@@ -128,6 +133,7 @@ export type Database = {
           slug?: string
           status?: string
           tags?: string[] | null
+          thumbnail_url?: string | null
           title?: string
           updated_at?: string
           views?: number
@@ -279,6 +285,7 @@ export type Database = {
           file_url: string
           filename: string
           id: string
+          thumbnail_url: string | null
           uploaded_by: string | null
         }
         Insert: {
@@ -290,6 +297,7 @@ export type Database = {
           file_url: string
           filename: string
           id?: string
+          thumbnail_url?: string | null
           uploaded_by?: string | null
         }
         Update: {
@@ -301,6 +309,7 @@ export type Database = {
           file_url?: string
           filename?: string
           id?: string
+          thumbnail_url?: string | null
           uploaded_by?: string | null
         }
         Relationships: []
@@ -761,6 +770,10 @@ export type Database = {
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_admin_or_editor: { Args: { _user_id: string }; Returns: boolean }
       is_reader: { Args: { _user_id: string }; Returns: boolean }
+      set_user_role: {
+        Args: { _role: string; _user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
