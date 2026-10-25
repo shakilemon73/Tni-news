@@ -142,8 +142,23 @@ export const useArticleSave = (
         await updateArticle(id, articleData);
         toast.success('আর্টিকেল আপডেট হয়েছে');
       } else {
-        // Create new article
-        await createArticle(articleData);
+        // Create new article; on a rare slug collision, regenerate and retry
+        let created = false;
+        for (let attempt = 0; attempt < 3 && !created; attempt++) {
+          try {
+            await createArticle(articleData);
+            created = true;
+          } catch (err: any) {
+            const isDuplicate = err?.message?.includes('duplicate key') || err?.code === '23505';
+            if (!isDuplicate || attempt === 2) throw err;
+            try {
+              slug = await getNextSequentialArticleSlug('article');
+            } catch {
+              slug = `article-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+            }
+            articleData.slug = slug;
+          }
+        }
         toast.success('নতুন আর্টিকেল তৈরি হয়েছে');
       }
       

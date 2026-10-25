@@ -123,21 +123,35 @@ export const slugExists = async (slug: string): Promise<boolean> => {
 export const getNextSequentialArticleSlug = async (prefix = 'article'): Promise<string> => {
   const safePrefix = prefix.trim() || 'article';
 
-  const { data, error } = await supabase
-    .from('articles')
-    .select('slug')
-    .like('slug', `${safePrefix}-%`);
-
-  if (error) throw error;
-
+  // Supabase caps every query at 1000 rows by default. With 1000+ articles the
+  // simple single query silently missed newer slugs and generated duplicates,
+  // so paginate until every matching slug has been read.
+  const PAGE_SIZE = 1000;
   let max = 0;
-  for (const row of data || []) {
-    const s = (row as { slug?: string }).slug;
-    if (!s) continue;
-    const match = s.match(new RegExp(`^${safePrefix}-(\\d+)$`));
-    if (!match) continue;
-    const n = Number.parseInt(match[1], 10);
-    if (Number.isFinite(n) && n > max) max = n;
+  let from = 0;
+
+  for (;;) {
+    const { data, error } = await supabase
+      .from('articles')
+      .select('slug')
+      .like('slug', `${safePrefix}-%`)
+      .order('created_at', { ascending: false })
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (error) throw error;
+
+    const rows = (data || []) as Array<{ slug?: string }>;
+    for (const row of rows) {
+      const s = row.slug;
+      if (!s) continue;
+      const match = s.match(new RegExp(`^${safePrefix}-(\\d+)$`));
+      if (!match) continue;
+      const n = Number.parseInt(match[1], 10);
+      if (Number.isFinite(n) && n > max) max = n;
+    }
+
+    if (rows.length < PAGE_SIZE) break;
+    from += PAGE_SIZE;
   }
 
   return `${safePrefix}-${max + 1}`;
